@@ -17,4 +17,4 @@ Unfortunately I'm unable to reproduce the performance reported in the paper. Not
 
 The program also includes the baseline kernel for comparison. Both of them are located in rtTrace.cu. 
 
-There are some implementation differences between this and the paper. I didn't use the *Optimal SAH* for CWBVH construction and *auction algorithm* for child node ordering. However according to the paper they should contribute <10% performance in total, so they should probably not be the reason for 5x slow down compared to the paper.
+There are some implementation differences between this and the paper. I didn't use the *Optimal SAH* for CWBVH construction (embree's BVH8 builder instead, which is a recursively splitting algorithm) and *auction algorithm* for child node ordering (greedy selection instead, which is >99% of the perf of auction). However according to the paper they should contribute <10% performance in total, so they should probably not be the reason for *5x* slow down compared to the paper.
