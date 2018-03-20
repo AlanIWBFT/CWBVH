@@ -320,9 +320,6 @@ void EmbreeBVHBuilder::ConvertToCUDACompressedWideBVH(BVH8Node * root, const int
 	OutNodeData.push_back(make_float4(0.0f));
 	OutNodeData.push_back(make_float4(0.0f));
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-
 	while (stackPtr > 0)
 	{
 		assert(stackPtr < 256);

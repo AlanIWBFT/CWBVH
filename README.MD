@@ -5,6 +5,8 @@ This is my personal implementation of NVIDIA's paper "Efficient Incoherent Ray T
 
 It loads mesh from mesh.dat and a list of surfels, which are defined by position, normal and radius, from samplecache.dat. The format is very easy to understand, just take a look at rtCore.cu. It then performs a simple surfel sorting pass and uses hemisphere gathering to calculate skylight irradiance for each surfel. While it should be faster to use shadow rays and importance sampling for this purpose, it's out of the scope of what we are trying to demonstrate.
 
+The kernel is launched repeatedly for 10 times and the output is written to output.hdr.
+
 Build
 --------
 Requires VS2015 and CUDA SDK v9.1 (the CUDA SDK version can be easily downgraded). Also needs tbb and embree3. embree3 is used as a static library (#define EMBREE_STATIC_LIB) but I think you can change it easily.

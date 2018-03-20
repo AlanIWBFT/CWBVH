@@ -523,9 +523,14 @@ __host__ void LaunchFinalGather(
     
     for (int i = 0; i < divideAndRoundup(numMappedTexel, ImageBlockSize); i++)
 	{
-        //progress_bar((float)(i + 1) / divideAndRoundup(numMappedTexel, ImageBlockSize));
-        //printf("  Block %d/%d", i + 1, divideAndRoundup(numMappedTexel, ImageBlockSize));
-		
+		static clock_t lastTime = clock();
+		if (clock() - lastTime > 160)
+		{
+			lastTime = clock();
+			progress_bar((float)(i + 1) / divideAndRoundup(numMappedTexel, ImageBlockSize));
+			printf("  Block %d/%d", i + 1, divideAndRoundup(numMappedTexel, ImageBlockSize));
+		}
+
         int rayCount = 0;
         
         cudaMemset(cudaRayCount, 0, sizeof(int));
