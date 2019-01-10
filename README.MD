@@ -18,3 +18,7 @@ Unfortunately I'm unable to reproduce the performance reported in the paper. Not
 The program also includes the baseline kernel for comparison. Both of them are located in rtTrace.cu. 
 
 There are some implementation differences between this and the paper. I didn't use the *Optimal SAH* for CWBVH construction (embree's BVH8 builder instead, which is a recursively splitting algorithm) and *auction algorithm* for child node ordering (greedy selection instead, which is >99% of the perf of auction). However according to the paper they should contribute <10% performance in total, so they should probably not be the reason for *5x* slow down compared to the paper.
+
+Update 01/10/2019
+--------
+Finally I found the performance issue is caused by a really stupid mistake in the BVH converter. While I'm not going to update the codebase, I think it should be very easy for the reader to fix it by him/herself. After the fix is made, along with some micro optimizations to the ray-box intersection part (using PRMT, VMIN and VMAX to implement the code at the end of https://github.com/hpicgs/cgsee/wiki/Ray-Box-Intersection-on-the-GPU), the implementation in this repository should be on par with the performance reported by the paper. I also compared it to NVIDIA's OptiX Prime and get very close performance, so I feel OptiX should be using CWBVH as well.
