@@ -33,7 +33,7 @@ __global__ void rtTraceCWBVHDynamicFetch(
 	const int STACK_SIZE = 32;
 	uint2 traversalStack[STACK_SIZE];
 
-	const int SM_STACK_SIZE = 8;
+	const int SM_STACK_SIZE = 8; // Slightly smaller stack size than the paper (12), as this seems faster on my GTX1080
 	__shared__ uint2 traversalStackSM[32][2][SM_STACK_SIZE];
 
 	int rayidx;
@@ -146,6 +146,7 @@ __global__ void rtTraceCWBVHDynamicFetch(
 						const unsigned int bit_index4 = (meta4 ^ (octinv4 & inner_mask4)) & 0x1F1F1F1F;
 						const unsigned int child_bits4 = (meta4 >> 5) & 0x07070707;
 
+						// Potential micro-optimization: use PRMT to do the selection here, as described by the paper
 						uint swizzledLox = (idirx < 0) ? float_as_uint(n3.z) : float_as_uint(n2.x);
 						uint swizzledHix = (idirx < 0) ? float_as_uint(n2.x) : float_as_uint(n3.z);
 
@@ -194,11 +195,13 @@ __global__ void rtTraceCWBVHDynamicFetch(
 
 						for (int childIndex = 0; childIndex < 4; childIndex++)
 						{
+							// Use VMIN, VMAX to compute the slabs
 							const float cmin = fmaxf(fmax_fmax(tminx[childIndex], tminy[childIndex], tminz[childIndex]), tmin);
 							const float cmax = fminf(fmin_fmin(tmaxx[childIndex], tmaxy[childIndex], tmaxz[childIndex]), tmax);
 
 							bool intersected = cmin <= cmax;
 
+							// Potential micro-optimization: use VSHL to implement this part, as described by the paper
 							if (intersected)
 							{
 								const unsigned int child_bits = extract_byte(child_bits4, childIndex);
@@ -216,6 +219,7 @@ __global__ void rtTraceCWBVHDynamicFetch(
 						const unsigned int bit_index4 = (meta4 ^ (octinv4 & inner_mask4)) & 0x1F1F1F1F;
 						const unsigned int child_bits4 = (meta4 >> 5) & 0x07070707;
 
+						// Potential micro-optimization: use PRMT to do the selection here, as described by the paper
 						uint swizzledLox = (idirx < 0) ? float_as_uint(n3.w) : float_as_uint(n2.y);
 						uint swizzledHix = (idirx < 0) ? float_as_uint(n2.y) : float_as_uint(n3.w);
 
@@ -264,11 +268,13 @@ __global__ void rtTraceCWBVHDynamicFetch(
 
 						for (int childIndex = 0; childIndex < 4; childIndex++)
 						{
+							// Use VMIN, VMAX to compute the slabs
 							const float cmin = fmaxf(fmax_fmax(tminx[childIndex], tminy[childIndex], tminz[childIndex]), tmin);
 							const float cmax = fminf(fmin_fmin(tmaxx[childIndex], tmaxy[childIndex], tmaxz[childIndex]), tmax);
 
 							bool intersected = cmin <= cmax;
 
+							// Potential micro-optimization: use VSHL to implement this part, as described by the paper
 							if (intersected)
 							{
 								const unsigned int child_bits = extract_byte(child_bits4, childIndex);

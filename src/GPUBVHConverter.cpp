@@ -166,7 +166,8 @@ void ConvertToGPUCompressedWideBVH(
 			nodeHi = fmaxf(nodeHi, node->ChildrenMax[childIndex]);
 		}
 
-		// Child node ordering
+		// Greedy child node ordering
+		// Should be 99.8% effective as the auction method used by the paper
 		{
 			const float3 nodeCentroid = (nodeLo + nodeHi) * 0.5f;
 
@@ -389,7 +390,7 @@ void WoopifyTriangle(
 	float4 col1 = make_float4(v1 - v2, 0.0f);
 	float4 col2 = make_float4(cross(v0 - v2, v1 - v2), 0.0f);
 	float4 col3 = make_float4(v2, 1.0f);
-	mtx.setCol(0, Vec4f(col0)); // sets matrix column 0 equal to a Vec4f(Vec3f, 0.0f )
+	mtx.setCol(0, Vec4f(col0));
 	mtx.setCol(1, Vec4f(col1));
 	mtx.setCol(2, Vec4f(col2));
 	mtx.setCol(3, Vec4f(col3));
