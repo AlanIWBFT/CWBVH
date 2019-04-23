@@ -28,7 +28,7 @@ int main()
 
 #if 1 // Use a mesh loaded from file
 	{
-		std::unique_ptr<std::FILE, decltype(&std::fclose)> meshFile(std::fopen("mesh.dat", "rb"), &std::fclose);
+		std::unique_ptr<std::FILE, decltype(&std::fclose)> meshFile(std::fopen("../mesh.dat", "rb"), &std::fclose);
 		int NumVertices, NumTriangles;
 
 		fread(&NumVertices, sizeof(int), 1, meshFile.get());
@@ -49,7 +49,7 @@ int main()
 	}
 
 	{
-		std::unique_ptr<std::FILE, decltype(&std::fclose)> sampleFile(std::fopen("samplecache.dat", "rb"), &std::fclose);
+		std::unique_ptr<std::FILE, decltype(&std::fclose)> sampleFile(std::fopen("../samplecache.dat", "rb"), &std::fclose);
 		int SizeX, SizeY;
 
 		fread(&SizeX, sizeof(SizeX), 1, sampleFile.get());

@@ -1,6 +1,7 @@
 #undef NDEBUG
 #include <cassert>
 #include <random>
+#include <float.h>
 #include "helper_math.h"
 #include "WoopTriangleHelper.h"
 #include "GPUBVHConverter.h"
