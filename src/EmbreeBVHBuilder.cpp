@@ -248,7 +248,11 @@ void SplitPrimitiveTriangle(const struct RTCBuildPrimitive* primitive, unsigned 
 
 BVH2Node* BuildBVH2AABB(int NumAABBs, std::function<void(int PrimitiveIndex, float3& OutLower, float3& OutUpper)> GetPrimitiveBoundsFunc)
 {
+  #ifdef __GNUC__
+  RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)aligned_alloc(32, sizeof(RTCBuildPrimitive) * NumAABBs * 2);
+  #else
 	RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)_aligned_malloc(sizeof(RTCBuildPrimitive) * NumAABBs * 2, 32);
+  #endif
 
 	tbb::parallel_for(0, NumAABBs, [&](int PrimitiveIndex)
 	{
@@ -287,13 +291,22 @@ BVH2Node* BuildBVH2AABB(int NumAABBs, std::function<void(int PrimitiveIndex, flo
 	rtcReleaseBVH(bvh);
 	rtcReleaseDevice(EmbreeDevice);
 
+  #ifdef __GNUC__
+  free(AABBs);
+  #else
 	_aligned_free(AABBs);
-	return root;
+	#endif
+
+  return root;
 }
 
 BVH2Node * BuildBVH2Triangle(std::vector<int3>& IndexBuffer, std::vector<float3> VertexBuffer)
 {
+  #ifdef __GNUC__
+  RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)aligned_alloc(32, sizeof(RTCBuildPrimitive) * IndexBuffer.size() * 2);
+  #else
 	RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)_aligned_malloc(sizeof(RTCBuildPrimitive) * IndexBuffer.size() * 2, 32);
+  #endif
 
 	tbb::parallel_for(0, (int)IndexBuffer.size(), [&](int PrimitiveIndex)
 	{
@@ -338,14 +351,23 @@ BVH2Node * BuildBVH2Triangle(std::vector<int3>& IndexBuffer, std::vector<float3>
 	rtcReleaseBVH(bvh);
 	rtcReleaseDevice(EmbreeDevice);
 
-	_aligned_free(AABBs);
+  #ifdef __GNUC__
+	free(AABBs);
+  #else
+  _aligned_free(AABBs);
+  #endif
+
 	return root;
 }
 
 
 BVH8Node * BuildBVH8AABB(int NumAABBs, std::function<void(int PrimitiveIndex, float3& OutLower, float3& OutUpper)> GetPrimitiveBoundsFunc)
 {
+  #ifdef __GNUC__
+  RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)aligned_alloc(32, sizeof(RTCBuildPrimitive) * NumAABBs * 2);
+  #else
 	RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)_aligned_malloc(sizeof(RTCBuildPrimitive) * NumAABBs * 2, 32);
+  #endif
 
 	tbb::parallel_for(0, NumAABBs, [&](int PrimitiveIndex)
 	{
@@ -384,13 +406,22 @@ BVH8Node * BuildBVH8AABB(int NumAABBs, std::function<void(int PrimitiveIndex, fl
 	rtcReleaseBVH(bvh);
 	rtcReleaseDevice(EmbreeDevice);
 
-	_aligned_free(AABBs);
-	return root;
+  #ifdef __GNUC__
+	free(AABBs);
+  #else
+  _aligned_free(AABBs);
+  #endif
+
+  return root;
 }
 
 BVH8Node * BuildBVH8Triangle(std::vector<int3>& IndexBuffer, std::vector<float3> VertexBuffer)
 {
-	RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)_aligned_malloc(sizeof(RTCBuildPrimitive) * IndexBuffer.size() * 8, 32);
+  #ifdef __GNUC__
+	RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)aligned_alloc(32, sizeof(RTCBuildPrimitive) * IndexBuffer.size() * 8);
+  #else
+  RTCBuildPrimitive* AABBs = (RTCBuildPrimitive*)_aligned_malloc(sizeof(RTCBuildPrimitive) * IndexBuffer.size() * 8, 32);
+  #endif
 
 	tbb::parallel_for(0, (int)IndexBuffer.size(), [&](int PrimitiveIndex)
 	{
@@ -437,6 +468,11 @@ BVH8Node * BuildBVH8Triangle(std::vector<int3>& IndexBuffer, std::vector<float3>
 	rtcReleaseBVH(bvh);
 	rtcReleaseDevice(EmbreeDevice);
 
+  #ifdef __GNUC__
+  free(AABBs);
+  #else
 	_aligned_free(AABBs);
+  #endif
+
 	return root;
 }
