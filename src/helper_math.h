@@ -1764,7 +1764,9 @@ __device__ __host__ inline void SHVectorRGB3::addIncomingRadiance(const float3& 
 	*this += SHVector3::basisFunction(worldSpaceDirection) * (incomingRadiance * weight);
 }
 
+#ifdef _WIN32
 __align__(16)
+#endif
 struct GatheredLightSample
 {
 	SHVector2 SHVector;
