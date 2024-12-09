@@ -55,7 +55,7 @@ __global__ void rtTraceCWBVHDynamicFetch(
 
 	do
 	{
-		int& rayBase = nextRayArray[threadIdx.y];
+		volatile int& rayBase = nextRayArray[threadIdx.y];
 
 		bool				terminated = stackPtr == 0 && nodeGroup.y <= 0x00FFFFFF && triangleGroup.y == 0;
 		const unsigned int	maskTerminated = __ballot_sync(__activemask(), terminated);
