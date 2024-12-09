@@ -365,7 +365,7 @@ __global__ void rtTraceCWBVHDynamicFetch(
 		#if DYNAMIC_FETCH
 			const int Nd = 4;
 			const int Nw = 16;
-			lostLoopIterations += __popc(__activemask()) - Nd;
+			lostLoopIterations += __popc(~__activemask()) - Nd;
 			if (lostLoopIterations >= Nw)
 				break;
 		#endif
